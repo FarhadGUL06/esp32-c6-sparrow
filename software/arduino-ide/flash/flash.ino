@@ -3,12 +3,17 @@
 
 #define FLASH_CS 23
 
+
 SPIFlash flash(FLASH_CS);
+
 
 void setup()
 {
 	// Initialize serial communication
 	Serial.begin(115200);
+  pinMode(FLASH_CS, OUTPUT);
+  delay(5000);
+  Serial.println("Start test");
 	if (flash.error()) {
 		Serial.println(flash.error(VERBOSE));
 	}
