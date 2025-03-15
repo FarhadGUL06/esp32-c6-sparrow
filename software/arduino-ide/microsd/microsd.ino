@@ -1,16 +1,21 @@
 #include <SD.h>
 #include <SPI.h>
 
-#define SD_CS 10
+#define SD_CS_PIN        10
+#define SD_CLK_PIN       6
+#define SD_MOSI_PIN      7
+#define SD_MISO_PIN       2
+
+
 
 void initialise_sd()
 {
-	int statussd = SD.begin(SD_CS);
+	int statussd = SD.begin(SD_CS_PIN);
 	while (!statussd) {
 		Serial.println("Initialising SD Card: status = ");
 		Serial.println(statussd);
 		delay(1000);
-		statussd = SD.begin(SD_CS);
+		statussd = SD.begin(SD_CS_PIN);
 	}
 }
 
@@ -37,6 +42,10 @@ void setup()
 {
 	// Initialize serial communication
 	Serial.begin(115200);
+
+    SPIClass spiSD = SPIClass(HSPI);
+  spiSD.begin(SD_CLK_PIN, SD_MISO_PIN, SD_MOSI_PIN, SD_CS_PIN); 
+
 	// Initialize the SD card
 	initialise_sd();
 	// Write to the file

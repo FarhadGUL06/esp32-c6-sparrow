@@ -5,47 +5,41 @@
 const int CS = 10;
 File myFile;
 
-void setup()
-{
-	Serial.begin(9600);
-	delay(6000);
-	while (!Serial)
-		; // Wait for user to open terminal
-	Serial.println(F("MicroSD Example"));
-
-	Serial.print("Initializing SD card...");
-
-	if (!SD.begin()) {
-		Serial.println("initialization failed!");
-		return;
-	}
-	Serial.println("initialization done.");
-
-	// open the file. note that only one file can be open at a time,
-	// so you have to close this one before opening another.
-	myFile = SD.open("test.txt", FILE_WRITE);
-
-	myFile.println("testing 1, 2, 3.");
-	// close the file:
-	myFile.close();
-
-	// re-open the file for reading:
-	myFile = SD.open("test.txt");
-	if (myFile) {
-		Serial.println("test.txt:");
-
-		// read from the file until there's nothing else in it:
-		while (myFile.available()) {
-			Serial.write(myFile.read());
-		}
-		// close the file:
-		myFile.close();
-	} else {
-		// if the file didn't open, print an error:
-		Serial.println("error opening test.txt");
-	}
+void initialise_sd() {
+    int statussd = SD.begin(SD_CS);
+    while (!statussd) {
+        Serial.println("Initialising SD Card: status = ");
+        Serial.println(statussd);
+        delay(1000);
+        statussd = SD.begin(SD_CS);
+    }
 }
 
-void loop()
-{
+void write_to_file() {
+    // Open the file for writing
+    File file = SD.open("/testare_1503.txt", FILE_WRITE);
+
+    // Check if the file opened successfully
+    if (file) {
+        Serial.println("Writing to file...");
+        // Write text to the file
+        file.println("Acest ESP32 Mergee!");
+        // Close the file
+        file.close();
+        Serial.println("Done.");
+    } else {
+        // If the file didn't open, print an error
+        Serial.println("Error opening file for writing.");
+    }
 }
+
+void setup() {
+    Serial.begin(9600);
+    delay(6000);
+    // Initialize the SD card
+    initialise_sd();
+    // Write to the file
+    write_to_file();
+}
+
+void loop() {}
